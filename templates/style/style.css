@@ -4,57 +4,127 @@
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
 }
+
 .cad-log-container {
     display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+}
+
+.idx-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.aside-log {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, #396afc 0%, #2948ff 100%);
+    padding: 20px;
+}
+
+.aside-log img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.log-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
     flex-direction: column;
 }
 
-.cad-header, .log-header {
+.logo img {
+    max-width: 300px;
+}
+
+.idx-nav .logo img {
+    max-width: 200px;
+  
+}
+
+.idx-nav {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    width: 100%;
+    max-height: 130px;
+    background: rgb(187, 221, 255);
+    padding: 1rem;
     align-items: center;
-    min-height: 100px;
-    padding:0 2rem 0 0;
-    background-color:rgb(205, 218, 238);
 }
 
-.cad-main, .log-main {
+.idx-nav-elmts {
     display: flex;
-    flex-direction: column;
-    padding: 3rem;
-    max-width: 700px;
-    margin: 1rem;
-}
-.cad-form, .log-form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    width: 100%;
+    flex-direction: row;
     gap: 1rem;
-}
-.cad-elm, .log-elm {
-    display: flex;
-    flex-direction: column;
+    justify-content: flex-end;
+    margin: 0 2rem 0 0;
 }
 
-.cad-elm input, button, .log-elm input, button{
-    height: 28px;
-    border-radius: 10px;
-    padding: 0 7px 0 7px;
-    border: 1px, solid, rgb(228, 228, 228);
-    border-bottom: 2px solid navy;
-}
-
-.cad-elm button, .log-elm button {
-    background-color: rgb(28, 113, 248);
+.idx-elmt button{
+    /* height: 40px;
+    width: 130px; */
     border: none;
+    background-color:#2948ff;
+    border-radius: 10px;
     
 }
 
-.index-main {
+.idx-nav-elmts a {
+    text-decoration: none;
+    color: white;
+}
+.idx-nav-elmts li{
+    list-style: none;
+}
+
+.idx-main {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    padding: 2rem;
-    background-color: rgb(205, 218, 238);
+    justify-content: center;
+    align-items: center;
+    padding: 200px;
+}
+
+.idx-main img{
+    max-width: 800px;
+}
+.log-txt {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 450px;
+    margin: 2rem 0;
+}
+
+.form-stl {
+    width: 100%;
+    max-width: 450px;
+}
+
+.return {
+    padding: 1rem;
+}
+
+@media (max-width: 768px) {
+    .cad-log-container {
+        flex-direction: column;
+    }
+
+    .log-main {
+        padding: 20px;
+    }
+
+    .aside-log img {
+        max-width: 80%;
+    }
 }
