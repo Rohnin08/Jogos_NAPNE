@@ -1,0 +1,38 @@
+# ---- Arquivos e pastas do sistema Windows ----
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ---- Virtualenv ----
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# ---- Logs e banco de dados ----
+*.log
+*.sqlite3
+instance/
+
+# ---- Flask ----
+*.db
+*.pid
+*.swp
+*.bak
+*.old
+
+# ---- VS Code ----
+.vscode/
+
+# ---- Arquivos de ambiente ----
+.env

@@ -21,52 +21,52 @@
                 <p>Bem vindo ao NAPNE Jogos</p>
             </div>
            <!-- Substitua o <form class="form-stl"> pelo código abaixo -->
-<form class="form-stl">
+<form class="form-stl" action="{{ url_for('cadastro') }}" method="POST">
     <div class="row">
         <div class="mb-3 col-md-6">
             <label for="primeiroNome" class="form-label">Nome</label>
-            <input type="text" class="form-control" id="primeiroNome" required>
+            <input type="text" class="form-control" id="primeiroNome" name="primeiro_nome" required>
         </div>
         <div class="mb-3 col-md-6">
             <label for="segundoNome" class="form-label">Sobrenome</label>
-            <input type="text" class="form-control" id="segundoNome" required>
+            <input type="text" class="form-control" id="segundoNome" name="segundo_nome" required>
         </div>
     </div>
 
     <div class="row">
         <div class="mb-3 col-md-6">
             <label for="email" class="form-label">Endereço de Email</label>
-            <input type="email" class="form-control" id="email" required>
+            <input type="email" class="form-control" id="email" name="email" required>
         </div>
         <div class="mb-3 col-md-6">
             <label for="cpf" class="form-label">CPF</label>
-            <input type="text" class="form-control" id="cpf" placeholder="000.000.000-00" maxlength="14" required>
+            <input type="text" class="form-control" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
         </div>
     </div>
 
     <div class="row">
         <div class="mb-3 col-md-6">
             <label for="senha" class="form-label">Senha</label>
-            <input type="password" class="form-control" id="senha" required>
+            <input type="password" class="form-control" id="senha" name="senha" required>
         </div>
         <div class="mb-3 col-md-6">
             <label for="areaTrabalho" class="form-label">Área de Trabalho</label>
-            <select class="form-select" id="areaTrabalho" required>
+            <select class="form-select" id="areaTrabalho" name="especialidade" required>
                 <option value="" selected disabled>Selecione sua área</option>
-                <option value="ps">Psicopedagogo</option>
-                <option value="il">Intérprete de Libras</option>
-                <option value="ass">Assistente</option>
-                <option value="outros">Outros</option>
+                <option value="Psicopedagogo">Psicopedagogo</option>
+                <option value="Intérprete de Libras">Intérprete de Libras</option>
+                <option value="Assistente">Assistente</option>
+                <option value="Outros">Outros</option>
             </select>
         </div>
     </div>
 
     <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1" name="lembrar">
         <label class="form-check-label" for="exampleCheck1">Lembrar de mim</label>
     </div>
 
-    <button type="submit" class="btn btn-primary w-100">Entrar</button>
+    <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
 </form>
 <div class="return">
     <a href="index.html">Voltar</a>
