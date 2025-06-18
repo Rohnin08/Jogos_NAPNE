@@ -22,12 +22,12 @@
             </div>
             <form action="{{ url_for('login') }}" class="form-stl" method="POST">
                 <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Endereço de Email</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                    <label for="exampleInputEmail1" class="form-label" >Endereço de Email</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" required>
                 </div>
                 <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">Senha</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" required>
+                    <label for="exampleInputPassword1" class="form-label"  >Senha</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1" name="senha" required>
                 </div>
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="exampleCheck1">
