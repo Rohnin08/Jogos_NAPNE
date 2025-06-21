@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, url_for, redirect, flash 
 from flask_sqlalchemy import SQLAlchemy
-from models import Funcionario, db
+from models import Funcionario, Categoria, db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -94,6 +94,29 @@ def dashboard():
         flash('Não sei como você veio parar aqui, mas sei que você deve sair', 'warning')
         return redirect(url_for('login'))
     return f"Bem-vindo(a) {session['usuario_nome']}"
+
+@app.route('/cadastroCategoria', methods=["GET", "POST"])
+def cadastrar_categoria():
+    if request.method == "POST":
+        nome = request.form.get('nome')
+        
+        if not nome:
+            flash("O nome da categoria é obrigatório.")
+            return redirect(url_for('cadastrar_categoria'))
+
+        categoria_existente = Categoria.query.filter_by(nome=nome).first()
+        if categoria_existente:
+            flash("Essa categoria já existe.")
+            return redirect(url_for('cadastrar_categoria'))
+
+        nova_categoria = Categoria(nome=nome)
+        db.session.add(nova_categoria)
+        db.session.commit()
+        flash("Categoria cadastrada com sucesso!")
+        return redirect(url_for('cadastrar_categoria'))
+    
+    return render_template("cadastroCategoria.html")
+
 
 if __name__ == '__main__':
     app.run(debug=True)
