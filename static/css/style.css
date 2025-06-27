@@ -46,12 +46,32 @@
     flex-direction: column;
 }
 
+.cad-alu-main {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.cad-alu-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    gap: 1rem;
+}
+
+.alu-form-elm {
+    display: flex;
+    flex-direction: column;
+}
+
 .logo img {
     max-width: 300px;
 }
 
 .idx-nav .logo img {
-    max-width: 200px;
+    max-width: 140px;
   
 }
 
@@ -60,8 +80,8 @@
     flex-direction: row;
     width: 100%;
     max-height: 130px;
-    background: rgb(187, 221, 255);
-    padding: 1rem;
+    box-shadow: 0px 0 1px 0;
+    padding: 0.5rem;
     align-items: center;
 }
 
@@ -74,19 +94,29 @@
     margin: 0 2rem 0 0;
 }
 
-.idx-elmt button{
-    /* height: 40px;
-    width: 130px; */
-    border: none;
-    background-color:#2948ff;
-    border-radius: 10px;
-    
-}
 
 .idx-nav-elmts a {
     text-decoration: none;
-    color: white;
+    color: rgb(0, 0, 0);
+    font-size: larger;
+    position: relative;
 }
+
+.idx-nav-elmts a::after {
+    content: " ";
+    width: 0%;
+    height: 4px;
+    background-color: rgb(5, 76, 162);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: 0.35s ease-in-out;
+}
+
+.idx-nav-elmts a:hover::after {
+    width: 100%;
+}
+
 .idx-nav-elmts li{
     list-style: none;
 }

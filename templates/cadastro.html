@@ -18,7 +18,7 @@
             </div>
             <div class="log-txt">
                 <h1>Cadastro</h1>
-                <p>Bem vindo ao NAPNE Jogos</p>
+                <p> Bem vindo ao NAPNE Jogos</p>
             </div>
            <!-- Substitua o <form class="form-stl"> pelo código abaixo -->
 <form class="form-stl" action="{{ url_for('cadastro') }}" method="POST">
@@ -68,8 +68,9 @@
 
     <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
 </form>
+<!-- volar para a tela inicial do site -->
 <div class="return">
-    <a href="index.html">Voltar</a>
+    <a href="{{ url_for('index') }}">Voltar</a> 
 </div>
 </main>
 </div>
