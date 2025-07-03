@@ -64,6 +64,7 @@
 .alu-form-elm {
     display: flex;
     flex-direction: column;
+    gap: 5px;
 }
 
 .logo img {
@@ -106,6 +107,7 @@
     content: " ";
     width: 0%;
     height: 4px;
+    border-radius: 10px;
     background-color: rgb(5, 76, 162);
     position: absolute;
     bottom: 0;
@@ -114,7 +116,7 @@
 }
 
 .idx-nav-elmts a:hover::after {
-    width: 100%;
+    width: 105%;
 }
 
 .idx-nav-elmts li{

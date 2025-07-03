@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, session, url_for, redirect, flash 
 from flask_sqlalchemy import SQLAlchemy
-from models import Funcionario, Categoria, db
+from models import Funcionario, Categoria, Aluno, db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -117,6 +117,32 @@ def cadastrar_categoria():
     
     return render_template("cadastroCategoria.html")
 
+@app.route('/cadastroAluno', methods=["GET", "POST"])
+def cadastro_aluno():
+    if request.method == "POST":
+        nome = request.form.get('nome')
+        matricula = request.form.get('matricula')
+        necessidade_especial = request.form.get("necessidade_especial")
+        observacao = request.form.get("observacao")
+
+        if not nome or not matricula or not necessidade_especial:
+            flash("Todos os campos obrigatórios devem ser preenchidos.")
+            return redirect(url_for('cadastro_aluno'))
+
+        novo_aluno = Aluno(
+            nome=nome,
+            matricula=matricula,
+            necessidade_especial=necessidade_especial, 
+            observacao=observacao
+        )
+
+        db.session.add(novo_aluno)
+        db.session.commit()
+
+        flash("Aluno cadastrado com sucesso!")
+        return redirect(url_for('cadastro_aluno'))
+
+    return render_template("cadastroAluno.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
