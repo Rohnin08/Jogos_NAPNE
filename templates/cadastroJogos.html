@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Cadastro de Jogos{% endblock %}
+
+{% block content %}
+<div class="cad-alu-main">
+    <h1>Cadastrar Jogo</h1>
+
+    <form action="{{ url_for('cadastro_jogos') }}" method="post" class="cad-alu-form">
+        <section class="alu-form-elm">
+            <label for="nome">Nome</label>
+            <input type="text" class="form-control" id="nome" name="nome" required>
+        </section>
+
+        <section class="alu-form-elm">
+            <label for="quant">Quantidade Disponível</label>
+            <input type="number" class="form-control" id="quant" name="quant" min="1" required>
+        </section>
+
+        <section class="alu-form-elm">
+            <label for="Descricao">Descrição</label>
+            <textarea class="form-control" id="Descricao" name="Descricao" rows="4" maxlength="400" style="resize: none;"></textarea>
+        </section>
+
+        <section class="alu-form-elm">
+            <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
+        </section>
+    </form>
+</div>
+{% endblock %}
