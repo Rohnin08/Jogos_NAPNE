@@ -17,10 +17,22 @@
             <input type="number" class="form-control" id="quant" name="quant" min="1" required>
         </section>
 
+       <section class="alu-form-elm">
+            <label for="categoria">Categoria</label>
+            <select class="form-control" id="categoria" name="categoria" required>
+                <option value="">Selecione uma categoria</option>
+                {% for categoria in categorias %}
+                <option value="{{ categoria.id_categoria }}">{{ categoria.nome }}</option>
+                {% endfor %}
+        </select>
+</section>
+
+
         <section class="alu-form-elm">
             <label for="Descricao">Descrição</label>
             <textarea class="form-control" id="Descricao" name="Descricao" rows="4" maxlength="400" style="resize: none;"></textarea>
         </section>
+
 
         <section class="alu-form-elm">
             <button type="submit" class="btn btn-primary w-100">Cadastrar</button>

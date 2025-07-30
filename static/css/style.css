@@ -77,6 +77,10 @@
     max-width: 140px;
   
 }
+.idx-option {
+    color: white;
+}
+
 
 .idx-nav {
     display: flex;

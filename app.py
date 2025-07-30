@@ -1,34 +1,34 @@
-from flask import Flask, render_template, request, session, url_for, redirect, flash 
-from flask_sqlalchemy import SQLAlchemy
-from models import Funcionario, Categoria, Aluno, db, Jogo
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Flask, render_template, request, session, url_for, redirect, flash #Importação do flask e funções dele.
+from flask_sqlalchemy import SQLAlchemy #Importação do SQLAlchemy
+from models import Funcionario, Categoria, Aluno, db, Jogo #Importação das tabelas de models
+from werkzeug.security import generate_password_hash, check_password_hash #Importar o hash
 
-app = Flask(__name__)
-app.secret_key = 'sua_chave_secreta_aqui'  
+app = Flask(__name__) #Definição dessa pagina como o app da aplicação
+app.secret_key = 'sua_chave_secreta_aqui'  #Secret key generica
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db' #Configurações do banco de dados da aplicação
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 
-db.init_app(app)
+db.init_app(app) #Inicialização do banco de dados
 
-with app.app_context():
+with app.app_context(): 
     db.create_all()
 
-@app.route('/')
+@app.route('/') #Rota da pagina inicial "index.html"
 def index():
     return render_template("index.html")
 
-@app.route('/cadastro', methods=["GET", "POST"])
+@app.route('/cadastro', methods=["GET", "POST"]) #Rota de cadastro
 def cadastro():
-    if request.method == "POST":
+    if request.method == "POST": #Requisição  com metodo post: ele enviara as informações para o banco de dados.
         try:
-            nome = request.form['primeiro_nome'] + ' ' + request.form['segundo_nome']
+            nome = request.form['primeiro_nome'] + ' ' + request.form['segundo_nome'] #Concatena  as strings nome e sobrenome
             email = request.form['email']
             cpf = request.form['cpf']
             especialidade = request.form['especialidade']
             senha = request.form['senha']
 
-            if Funcionario.query.filter_by(email=email).first():
+            if Funcionario.query.filter_by(email=email).first(): 
                 flash('Este e-mail já está cadastrado.', 'danger')
                 return redirect(url_for('cadastro'))
 
@@ -36,9 +36,9 @@ def cadastro():
                 flash('Este CPF já está cadastrado.', 'danger')
                 return redirect(url_for('cadastro'))
 
-            senha_hash = generate_password_hash(senha)
+            senha_hash = generate_password_hash(senha) #Gera o hash da senha do usuário, vai criptografar a senha, aumentando assim a segurança.
 
-            novo_funcionario = Funcionario(
+            novo_funcionario = Funcionario( 
                 nome=nome,
                 email=email,
                 senha=senha_hash,
@@ -141,15 +141,21 @@ def cadastro_aluno():
 
     return render_template("cadastroAluno.html")
 
+from flask import render_template, request, redirect, url_for, flash
+from models import db, Jogo, Categoria, JogosCategoria  # certifique-se que Categoria está importado
+
 @app.route('/cadastroJogos', methods=["GET", "POST"])
 def cadastro_jogos():
+    categorias = Categoria.query.all()
+
     if request.method == "POST":
         nome = request.form.get('nome')
         quant = request.form.get('quant')
         descricao = request.form.get('Descricao')
+        id_categoria = request.form.get('categoria')  # pega ID da categoria selecionada
 
-        if not nome or not quant:
-            flash("Nome e quantidade são obrigatórios!", "danger")
+        if not nome or not quant or not id_categoria:
+            flash("Todos os campos são obrigatórios!", "danger")
             return redirect(url_for('cadastro_jogos'))
 
         try:
@@ -160,13 +166,21 @@ def cadastro_jogos():
             )
             db.session.add(novo_jogo)
             db.session.commit()
+
+            relacao = JogosCategoria(
+                id_jogo=novo_jogo.id_jogo,
+                id_categoria=int(id_categoria)
+            )
+            db.session.add(relacao)
+            db.session.commit()
+
         except Exception as e:
             db.session.rollback()
-           
 
         return redirect(url_for('cadastro_jogos'))
 
-    return render_template('cadastroJogos.html')
+    return render_template('cadastroJogos.html', categorias=categorias)
+
 
 
 if __name__ == '__main__':
