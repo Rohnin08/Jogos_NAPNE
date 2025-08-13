@@ -23,13 +23,18 @@ class Aluno(db.Model):
     necessidade_especial = db.Column(db.String(100), nullable=False)
     observacao = db.Column(db.String(200))
 
-    atendimentos = db.relationship('Atendimento', backref='aluno', lazy=True)
+    atendimentos = db.relationship(
+        'Atendimento',
+        secondary='atendimento_aluno',
+        back_populates='alunos',
+        lazy='subquery'
+    )
 
 
 class Categoria(db.Model):
     __tablename__ = 'categoria'
     id_categoria = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    nome = db.Column(db.String(100), nullable=False)
+    nome = db.Column(db.String(50), nullable=False)
 
     jogos_categorias = db.relationship('JogosCategoria', backref='categoria', lazy=True)
 
@@ -42,7 +47,13 @@ class Jogo(db.Model):
     descricao = db.Column(db.String(400))
 
     jogos_categorias = db.relationship('JogosCategoria', backref='jogo', lazy=True)
-    jogos_atendimentos = db.relationship('JogosAtendimento', backref='jogo', lazy=True)
+
+    atendimentos = db.relationship(
+        'Atendimento',
+        secondary='atendimento_jogo',
+        back_populates='jogos',
+        lazy='subquery'
+    )
 
 
 class JogosCategoria(db.Model):
@@ -52,19 +63,38 @@ class JogosCategoria(db.Model):
     id_jogo = db.Column(db.Integer, db.ForeignKey('jogo.id_jogo'), nullable=False)
 
 
-class JogosAtendimento(db.Model):
-    __tablename__ = 'jogos_atendimento'
-    id_jogos_atendimento = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    id_jogo = db.Column(db.Integer, db.ForeignKey('jogo.id_jogo'), nullable=False)
+# Tabela associativa Atendimento ↔ Aluno
+atendimento_aluno = db.Table(
+    'atendimento_aluno',
+    db.Column('id_atendimento', db.Integer, db.ForeignKey('atendimento.id_atendimento'), primary_key=True),
+    db.Column('id_aluno', db.Integer, db.ForeignKey('aluno.id_aluno'), primary_key=True)
+)
 
-    atendimentos = db.relationship('Atendimento', backref='jogos_atendimento', lazy=True)
+# Tabela associativa Atendimento ↔ Jogo
+atendimento_jogo = db.Table(
+    'atendimento_jogo',
+    db.Column('id_atendimento', db.Integer, db.ForeignKey('atendimento.id_atendimento'), primary_key=True),
+    db.Column('id_jogo', db.Integer, db.ForeignKey('jogo.id_jogo'), primary_key=True)
+)
 
 
 class Atendimento(db.Model):
     __tablename__ = 'atendimento'
     id_atendimento = db.Column(db.Integer, primary_key=True, autoincrement=True)
     progresso_aluno = db.Column(db.String(400))
-    id_aluno = db.Column(db.Integer, db.ForeignKey('aluno.id_aluno'), nullable=False)
-    id_funcionario = db.Column(db.Integer, db.ForeignKey('funcionario.id_funcionario'), nullable=False)
-    id_jogos_atendimento = db.Column(db.Integer, db.ForeignKey('jogos_atendimento.id_jogos_atendimento'), nullable=False)
     data_atendimento = db.Column(db.Date, nullable=False)
+    id_funcionario = db.Column(db.Integer, db.ForeignKey('funcionario.id_funcionario'), nullable=False)
+
+    alunos = db.relationship(
+        'Aluno',
+        secondary=atendimento_aluno,
+        back_populates='atendimentos',
+        lazy='subquery'
+    )
+
+    jogos = db.relationship(
+        'Jogo',
+        secondary=atendimento_jogo,
+        back_populates='atendimentos',
+        lazy='subquery'
+    )

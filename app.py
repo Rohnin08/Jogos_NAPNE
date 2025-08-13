@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, url_for, redirect, flash #Importação do flask e funções dele.
-from flask_sqlalchemy import SQLAlchemy #Importação do SQLAlchemy
-from models import Funcionario, Categoria, Aluno, db, Jogo #Importação das tabelas de models
+from models import Funcionario, Categoria, Aluno, db, Jogo, Atendimento #Importação das tabelas de models
 from werkzeug.security import generate_password_hash, check_password_hash #Importar o hash
+from datetime import date
 
 app = Flask(__name__) #Definição dessa pagina como o app da aplicação
 app.secret_key = 'sua_chave_secreta_aqui'  #Secret key generica
@@ -181,7 +181,52 @@ def cadastro_jogos():
 
     return render_template('cadastroJogos.html', categorias=categorias)
 
+#Cadastro de atendimentos
+@app.route('/cadastroAtendimento', methods=['GET', 'POST'])
+def cadastro_atendimento():
+    if 'usuario_id' not in session:
+        flash('Você precisa estar logado para cadastrar um atendimento.', 'warning')
+        return redirect(url_for('login'))
 
+    alunos = Aluno.query.all()
+    jogos = Jogo.query.all()
+
+    if request.method == 'POST':
+        aluno_ids = request.form.getlist('alunos')
+        jogo_ids = request.form.getlist('jogos')
+        progresso = request.form.get('progresso')
+
+        if not aluno_ids or not jogo_ids:
+            flash("Selecione pelo menos um aluno e um jogo.", "danger")
+            return redirect(url_for('cadastro_atendimento'))
+
+        novo_atendimento = Atendimento(
+            progresso_aluno=progresso,
+            data_atendimento=date.today(),
+            id_funcionario=session['usuario_id']
+        )
+
+        for aluno_id in aluno_ids:
+            aluno = Aluno.query.get(aluno_id)
+            if aluno:
+                novo_atendimento.alunos.append(aluno)
+
+        for jogo_id in jogo_ids:
+            jogo = Jogo.query.get(jogo_id)
+            if jogo:
+                novo_atendimento.jogos.append(jogo)
+
+        try:
+            db.session.add(novo_atendimento)
+            db.session.commit()
+            flash("Atendimento cadastrado com sucesso!", "success")
+            return redirect(url_for('dashboard'))
+        except Exception as e:
+            db.session.rollback()
+            print(e)  # <-- Aqui imprime o erro no console
+            raise      # <-- Aqui relança o erro para não silenciar
+
+    return render_template('cadastroAtendimento.html', alunos=alunos, jogos=jogos)
 
 if __name__ == '__main__':
     app.run(debug=True)

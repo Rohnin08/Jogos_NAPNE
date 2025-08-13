@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cadastrar Atendimento</title>
+  <style>
+    body {
+      background: #f8f9fa;
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      color: #212529;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    main {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      max-width: 480px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #0d6efd;
+      margin-bottom: 24px;
+      font-size: 1.8rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    select, textarea {
+      font-size: 1rem;
+      padding: 8px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      width: 100%;
+      box-sizing: border-box;
+      font-family: inherit;
+      resize: vertical;
+    }
+
+    select {
+      height: 40px;
+    }
+
+    textarea {
+      min-height: 80px;
+    }
+
+    button[type="submit"] {
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      padding: 12px 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #084cd9;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Novo Atendimento</h1>
+    <form action="{{ url_for('cadastro_atendimento') }}" method="POST">
+
+      <label for="aluno">Selecione o aluno:</label>
+      <select name="alunos" id="aluno" required>
+        <option value="" disabled selected>Selecione um aluno</option>
+        {% for aluno in alunos %}
+          <option value="{{ aluno.id_aluno }}">{{ aluno.nome }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="jogo">Selecione o jogo:</label>
+      <select name="jogos" id="jogo" required>
+        <option value="" disabled selected>Selecione um jogo</option>
+        {% for jogo in jogos %}
+          <option value="{{ jogo.id_jogo }}">{{ jogo.nome }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="progresso">Progresso:</label>
+      <textarea name="progresso" id="progresso" maxlength="400" placeholder="Descreva o progresso..."></textarea>
+
+      <button type="submit">Cadastrar</button>
+    </form>
+  </main>
+</body>
+</html>

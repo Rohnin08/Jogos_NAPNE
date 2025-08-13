@@ -36,20 +36,24 @@ CREATE TABLE IF NOT EXISTS Jogos_Categoria (
     FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria)
 );
 
-CREATE TABLE IF NOT EXISTS Jogos_Atendimento (
-    id_jogos_atendimento INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_jogo INTEGER NOT NULL,
-    FOREIGN KEY (id_jogo) REFERENCES Jogo(id_jogo)
-);
-
 CREATE TABLE IF NOT EXISTS Atendimento (
     id_atendimento INTEGER PRIMARY KEY AUTOINCREMENT,
     progresso_aluno VARCHAR(400),
+    data_atendimento DATE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Atendimento_Aluno (
+    id_atendimento INTEGER NOT NULL,
     id_aluno INTEGER NOT NULL,
-    id_funcionario INTEGER NOT NULL,
-    id_jogos_atendimento INTEGER NOT NULL,
-    data_atendimento DATE NOT NULL,
-    FOREIGN KEY (id_aluno) REFERENCES Aluno(id_aluno),
-    FOREIGN KEY (id_funcionario) REFERENCES Funcionario(id_funcionario),
-    FOREIGN KEY (id_jogos_atendimento) REFERENCES Jogos_Atendimento(id_jogos_atendimento)
+    PRIMARY KEY (id_atendimento, id_aluno),
+    FOREIGN KEY (id_atendimento) REFERENCES Atendimento(id_atendimento) ON DELETE CASCADE,
+    FOREIGN KEY (id_aluno) REFERENCES Aluno(id_aluno) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Atendimento_Jogo (
+    id_atendimento INTEGER NOT NULL,
+    id_jogo INTEGER NOT NULL,
+    PRIMARY KEY (id_atendimento, id_jogo),
+    FOREIGN KEY (id_atendimento) REFERENCES Atendimento(id_atendimento) ON DELETE CASCADE,
+    FOREIGN KEY (id_jogo) REFERENCES Jogo(id_jogo) ON DELETE CASCADE
 );

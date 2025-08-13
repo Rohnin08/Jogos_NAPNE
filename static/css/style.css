@@ -29,9 +29,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(90deg, #396afc 0%, #2948ff 100%);
+    background-image: url("/static/imgs/Gemini_Generated_Image_emclcuemclcuemcl\ \(1\).png");
+    background-size: cover;
     padding: 20px;
 }
+
 
 .aside-log img {
     max-width: 100%;
@@ -69,8 +71,13 @@
     gap: 5px;
 }
 
-.logo img {
-    max-width: 300px;
+.logo {
+    display: flex;
+    justify-content:flex-start;
+}
+
+.logo img{
+    max-width: 140px;
 }
 
 .idx-nav .logo img {
@@ -100,7 +107,6 @@
     justify-content: flex-end;
     padding: 20px;
     margin-right: 20px;
-    border: 2px solid rgb(190, 190, 190);
 }
 
 
@@ -136,12 +142,21 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 200px;
+
 }
 
-.idx-main img{
-    max-width: 800px;
+.idx-idx-main {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url('/static/imgs/Inserir\ um\ pouquinho\ de\ texto.png');
+    background-size: cover;
+
 }
+
 .log-txt {
     display: flex;
     flex-direction: column;
@@ -160,6 +175,22 @@
     padding: 1rem;
 }
 
+.idx-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 1rem;
+    align-items: center;
+    
+}
+
+.idx-footer-elm {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2rem;
+    align-items: center;
+}
 @media (max-width: 768px) {
     .cad-log-container {
         flex-direction: column;
