@@ -11,15 +11,15 @@
     <link href="https://cdn.boxicons.com/fonts/basic/boxicons.min.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="idx-container">
+    <div class="base-container">
 
         <!-- NAVBAR -->
-        <nav class="idx-nav">
+        <nav class="base-nav">
            <div class="logo">
                 <img src="/static/imgs/Logo__1_-removebg-preview.png" alt="">
             </div>
                
-            <ul class="idx-nav-elmts d-flex align-items-center gap-3">
+            <ul class="base-nav-elmts d-flex align-items-center gap-3">
                 
                 {% if 'usuario_id' in session %}
                     <!-- Botão para abrir offcanvas -->
@@ -30,15 +30,15 @@
                     </li>
 
                     <!-- Link sair -->
-                    <li class="idx-elmt">
+                    <li class="base-elmt">
                         <a href="{{ url_for('logout') }}">Sair</a>
                     </li>
                 {% else %}
                     <!-- Usuário não logado - mostrar login e cadastro -->
-                    <li class="idx-elmt">
+                    <li class="base-elmt">
                         <a href="{{ url_for('login') }}">Entrar</a>
                     </li>
-                    <li class="idx-elmt">
+                    <li class="base-elmt">
                         <a href="{{ url_for('cadastro') }}">Cadastrar-se</a>
                     </li>
                 {% endif %}
@@ -54,16 +54,20 @@
             </div>
             {% if 'usuario_id' in session %}
             <div class="offcanvas-body" style="color: white;">
-                <li class="idx-option">
+                <li class="base-option">
+                    <i class='bxr  bx-home'  style='color:#ffffff'></i> 
                     <a href="{{ url_for('dashboard') }}">Dashboard</a>
                 </li>
-                <li class="idx-elmt">
+                <li class="base-option">
+                    <i class='bxr  bx-education'  style='color:#ffffff'></i>
                     <a href="{{ url_for('cadastro_aluno') }}">Cadastrar aluno</a>
                 </li>
-                <li class="idx-option">
+                <li class="base-option">
+                    <i class='bxr  bx-chess-knight'  style='color:#ffffff'></i> 
                     <a href="{{ url_for('cadastro_jogos') }}">Cadastrar jogos</a>
                 </li>
-                 <li class="idx-option">
+                 <li class="base-option">
+                    <i class='bxr  bx-form'  style='color:#ffffff'></i> 
                     <a href="{{ url_for('cadastro_atendimento') }}">Cadastrar atendimento</a>
                 </li>
             </div>
@@ -71,17 +75,23 @@
         </div>
 
         <!-- Conteúdo dinâmico da página -->
-        <main class="idx-main">
+        <main class="base-main">
             {% block content %}
             {% endblock %}
         </main>
     </div>
     
-    <footer class="idx-footer">
-        <ul class="idx-footer-elm">
-            <li>Sobre o NAPNE</li>
-            <li>Nossa equipe</li>
-            <li>Contantos</li>
+    <footer class="base-footer">
+        <ul class="base-footer-elmt">
+            <li>
+                <a href="">Sobre o NAPNE</a>
+            </li>
+            <li>
+                <a href="">Nossa equipe</a>
+            </li>
+            <li>
+                <a href="">Contantos</a>
+            </li>
         </ul>
     </footer>
 

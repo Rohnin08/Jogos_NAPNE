@@ -17,7 +17,7 @@
     
 }
 
-.idx-container {
+.base-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -80,16 +80,39 @@
     max-width: 140px;
 }
 
-.idx-nav .logo img {
+.base-nav .logo img {
     max-width: 140px;
   
 }
-.idx-option {
+.base-option {
+    display: flex;
+    flex-direction: row;
+    justify-content:flex-start;
+    align-items: center;
+    color: white;
+    list-style: none;
+    gap: 5px;
+}
+
+.base-option a {
+    text-decoration: none;
     color: white;
 }
 
 
-.idx-nav {
+.offcanvas {
+    padding: 1rem 2rem 1rem 2rem;
+}
+
+.offcanvas-body {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+
+.base-nav {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -99,7 +122,7 @@
     align-items: center;
 }
 
-.idx-nav-elmts {
+.base-nav-elmts {
     display: flex;
     width: 100%;
     flex-direction: row;
@@ -110,14 +133,14 @@
 }
 
 
-.idx-nav-elmts a {
+.base-nav-elmts a {
     text-decoration: none;
     color: rgb(0, 0, 0);
     font-size: larger;
     position: relative;
 }
 
-.idx-nav-elmts a::after {
+.base-nav-elmts a::after {
     content: " ";
     width: 0%;
     height: 4px;
@@ -129,15 +152,15 @@
     transition: 0.35s ease-in-out;
 }
 
-.idx-nav-elmts a:hover::after {
+.base-nav-elmts a:hover::after {
     width: 105%;
 }
 
-.idx-nav-elmts li{
+.base-nav-elmts li{
     list-style: none;
 }
 
-.idx-main {
+.base-main {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -175,7 +198,7 @@
     padding: 1rem;
 }
 
-.idx-footer {
+.base-footer {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -184,13 +207,19 @@
     
 }
 
-.idx-footer-elm {
+.base-footer-elmt {
     display: flex;
     flex-direction: row;
     justify-content: center;
     gap: 2rem;
     align-items: center;
+
 }
+
+.base-footer-elmt li {
+    list-style: none;
+}
+
 @media (max-width: 768px) {
     .cad-log-container {
         flex-direction: column;
