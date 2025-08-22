@@ -228,5 +228,21 @@ def cadastro_atendimento():
 
     return render_template('cadastroAtendimento.html', alunos=alunos, jogos=jogos)
 
+
+@app.route("/jogos")
+def listar_jogos():
+    jogos = Jogo.query.all()
+    jogos_formatados = []
+    for j in jogos:
+        categorias = ", ".join([c.nome for c in j.categorias]) if j.categorias else "Sem categoria"
+        jogos_formatados.append({
+            "id": j.id_jogo,
+            "nome": j.nome,
+            "quant": j.quant_disponivel,
+            "descricao": j.descricao or "Sem descrição",
+            "categorias": categorias
+        })
+    return render_template("listar_jogos.html", jogos=jogos_formatados)
+
 if __name__ == '__main__':
     app.run(debug=True)

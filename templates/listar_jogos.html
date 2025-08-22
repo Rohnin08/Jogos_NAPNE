@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Lista de Jogos Cadastrados</h2>
+
+<table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Quantidade</th>
+            <th>Descrição</th>
+            <th>Categorias</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for jogo in jogos %}
+        <tr>
+            <td>{{ jogo.nome }}</td>
+            <td>{{ jogo.quant_disponivel }}</td>
+            <td>{{ jogo.descricao or "Sem descrição" }}</td>
+            <td>
+                {% if jogo.categorias %}
+                    {{ ", ".join([c.nome for c in jogo.categorias]) }}
+                {% else %}
+                    Sem categoria
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('editar_jogo', id=jogo.id_jogo) }}">Editar</a> |
+                <a href="{{ url_for('excluir_jogo', id=jogo.id_jogo) }}" onclick="return confirm('Tem certeza?')">Excluir</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

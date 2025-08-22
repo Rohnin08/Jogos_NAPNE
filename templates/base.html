@@ -55,20 +55,35 @@
             {% if 'usuario_id' in session %}
             <div class="offcanvas-body" style="color: white;">
                 <li class="base-option">
-                    <i class='bxr  bx-home'  style='color:#ffffff'></i> 
-                    <a href="{{ url_for('dashboard') }}">Dashboard</a>
-                </li>
-                <li class="base-option">
-                    <i class='bxr  bx-education'  style='color:#ffffff'></i>
-                    <a href="{{ url_for('cadastro_aluno') }}">Cadastrar aluno</a>
-                </li>
-                <li class="base-option">
-                    <i class='bxr  bx-chess-knight'  style='color:#ffffff'></i> 
-                    <a href="{{ url_for('cadastro_jogos') }}">Cadastrar jogos</a>
-                </li>
-                 <li class="base-option">
+                    <!-- <i class='bxr  bx-home'  style='color:#ffffff'></i> -->
                     <i class='bxr  bx-form'  style='color:#ffffff'></i> 
-                    <a href="{{ url_for('cadastro_atendimento') }}">Cadastrar atendimento</a>
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Atendimentos
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Todos os Atentimentos</a></li>
+                      <li><a class="dropdown-item" href="#">Adicionar um novo</a></li>
+                    </ul>             
+                </li>
+                <li class="base-option">
+                   <i class='bxr  bx-education'  style='color:#ffffff'></i> 
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Alunos
+                    </a> 
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Todos os alunos</a></li>
+                      <li><a class="dropdown-item" href="#">Adicionar novo Aluno</a></li>
+                    </ul> 
+                </li>
+                <li class="base-option">
+                    <i class='bxr  bx-chess-knight'  style='color:#ffffff'></i>
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Jogos
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Todos os jogos</a></li>
+                      <li><a class="dropdown-item" href="#">Adicionar novo Jogo</a></li>
+                    </ul> 
                 </li>
             </div>
             {% endif %}

@@ -2,6 +2,35 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+# ===========================
+# Tabelas associativas
+# ===========================
+
+# Associação Jogo ↔ Categoria (N:N)
+jogos_categorias = db.Table(
+    'jogos_categoria',
+    db.Column('id_categoria', db.Integer, db.ForeignKey('categoria.id_categoria'), primary_key=True),
+    db.Column('id_jogo', db.Integer, db.ForeignKey('jogo.id_jogo'), primary_key=True)
+)
+
+# Associação Atendimento ↔ Aluno
+atendimento_aluno = db.Table(
+    'atendimento_aluno',
+    db.Column('id_atendimento', db.Integer, db.ForeignKey('atendimento.id_atendimento'), primary_key=True),
+    db.Column('id_aluno', db.Integer, db.ForeignKey('aluno.id_aluno'), primary_key=True)
+)
+
+# Associação Atendimento ↔ Jogo
+atendimento_jogo = db.Table(
+    'atendimento_jogo',
+    db.Column('id_atendimento', db.Integer, db.ForeignKey('atendimento.id_atendimento'), primary_key=True),
+    db.Column('id_jogo', db.Integer, db.ForeignKey('jogo.id_jogo'), primary_key=True)
+)
+
+# ===========================
+# Classes principais
+# ===========================
+
 class Funcionario(db.Model):
     __tablename__ = 'funcionario'
     id_funcionario = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -25,7 +54,7 @@ class Aluno(db.Model):
 
     atendimentos = db.relationship(
         'Atendimento',
-        secondary='atendimento_aluno',
+        secondary=atendimento_aluno,
         back_populates='alunos',
         lazy='subquery'
     )
@@ -36,7 +65,12 @@ class Categoria(db.Model):
     id_categoria = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nome = db.Column(db.String(50), nullable=False)
 
-    jogos_categorias = db.relationship('JogosCategoria', backref='categoria', lazy=True)
+    # Relacionamento N:N com Jogo
+    jogos = db.relationship(
+        'Jogo',
+        secondary=jogos_categorias,
+        backref=db.backref('categorias', lazy='dynamic')
+    )
 
 
 class Jogo(db.Model):
@@ -46,36 +80,12 @@ class Jogo(db.Model):
     quant_disponivel = db.Column(db.Integer, nullable=False)
     descricao = db.Column(db.String(400))
 
-    jogos_categorias = db.relationship('JogosCategoria', backref='jogo', lazy=True)
-
     atendimentos = db.relationship(
         'Atendimento',
-        secondary='atendimento_jogo',
+        secondary=atendimento_jogo,
         back_populates='jogos',
         lazy='subquery'
     )
-
-
-class JogosCategoria(db.Model):
-    __tablename__ = 'jogos_categoria'
-    id_jogos_categoria = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    id_categoria = db.Column(db.Integer, db.ForeignKey('categoria.id_categoria'), nullable=False)
-    id_jogo = db.Column(db.Integer, db.ForeignKey('jogo.id_jogo'), nullable=False)
-
-
-# Tabela associativa Atendimento ↔ Aluno
-atendimento_aluno = db.Table(
-    'atendimento_aluno',
-    db.Column('id_atendimento', db.Integer, db.ForeignKey('atendimento.id_atendimento'), primary_key=True),
-    db.Column('id_aluno', db.Integer, db.ForeignKey('aluno.id_aluno'), primary_key=True)
-)
-
-# Tabela associativa Atendimento ↔ Jogo
-atendimento_jogo = db.Table(
-    'atendimento_jogo',
-    db.Column('id_atendimento', db.Integer, db.ForeignKey('atendimento.id_atendimento'), primary_key=True),
-    db.Column('id_jogo', db.Integer, db.ForeignKey('jogo.id_jogo'), primary_key=True)
-)
 
 
 class Atendimento(db.Model):
