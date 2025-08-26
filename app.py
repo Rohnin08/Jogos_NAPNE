@@ -140,9 +140,7 @@ def cadastro_aluno():
         return redirect(url_for('cadastro_aluno'))
 
     return render_template("cadastroAluno.html")
-
-from flask import render_template, request, redirect, url_for, flash
-from models import db, Jogo, Categoria, JogosCategoria  # certifique-se que Categoria está importado
+# certifique-se que Categoria está importado
 
 @app.route('/cadastroJogos', methods=["GET", "POST"])
 def cadastro_jogos():
@@ -167,12 +165,16 @@ def cadastro_jogos():
             db.session.add(novo_jogo)
             db.session.commit()
 
-            relacao = JogosCategoria(
-                id_jogo=novo_jogo.id_jogo,
-                id_categoria=int(id_categoria)
-            )
-            db.session.add(relacao)
+           # Pega a categoria selecionada pelo id
+            categoria = Categoria.query.get(int(id_categoria))
+
+            # Adiciona a categoria ao novo jogo via relacionamento N:N
+            novo_jogo.categorias.append(categoria)
+
+            # Salva no banco
+            db.session.add(novo_jogo)
             db.session.commit()
+
 
         except Exception as e:
             db.session.rollback()
