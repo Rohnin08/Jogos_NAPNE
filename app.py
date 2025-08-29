@@ -231,20 +231,56 @@ def cadastro_atendimento():
     return render_template('cadastroAtendimento.html', alunos=alunos, jogos=jogos)
 
 
+# @app.route("/jogos")
+# def listar_jogos():
+#     jogos = Jogo.query.all()
+#     jogos_formatados = []
+#     for j in jogos:
+#         categorias = ", ".join([c.nome for c in j.categorias]) if j.categorias else "Sem categoria"
+#         jogos_formatados.append({
+#             "id": j.id_jogo,
+#             "nome": j.nome,
+#             "quant": j.quant_disponivel,
+#             "descricao": j.descricao or "Sem descrição",
+#             "categorias": categorias
+#         })
+#     return render_template("listar_jogos.html", jogos=jogos_formatados)
+
 @app.route("/jogos")
 def listar_jogos():
-    jogos = Jogo.query.all()
-    jogos_formatados = []
-    for j in jogos:
-        categorias = ", ".join([c.nome for c in j.categorias]) if j.categorias else "Sem categoria"
-        jogos_formatados.append({
-            "id": j.id_jogo,
-            "nome": j.nome,
-            "quant": j.quant_disponivel,
-            "descricao": j.descricao or "Sem descrição",
-            "categorias": categorias
-        })
-    return render_template("listar_jogos.html", jogos=jogos_formatados)
+    jogos = Jogo.query.all()  # mantém como objetos
+    return render_template("listar_jogos.html", jogos=jogos)
+
+
+@app.route('/jogos/editar/<int:id>', methods=['GET', 'POST'])
+def editar_jogo(id):
+    jogo = Jogo.query.get_or_404(id)
+    categorias = Categoria.query.all()
+
+    if request.method == 'POST':
+        jogo.nome = request.form.get('nome')
+        jogo.quant_disponivel = int(request.form.get('quant'))
+        jogo.descricao = request.form.get('descricao')
+
+        categoria_id = request.form.get('categoria')
+        if categoria_id:
+            categoria = Categoria.query.get(int(categoria_id))
+            if categoria and categoria not in jogo.categorias:
+                jogo.categorias = [categoria]  # ou append, dependendo da lógica
+
+        db.session.commit()
+        flash('Jogo atualizado com sucesso!', 'success')
+        return redirect(url_for('listar_jogos'))
+
+    return render_template('editar_jogo.html', jogo=jogo, categorias=categorias)
+
+@app.route('/jogos/excluir/<int:id>', methods=['POST', 'GET'])
+def excluir_jogo(id):
+    jogo = Jogo.query.get_or_404(id)
+    db.session.delete(jogo)
+    db.session.commit()
+    flash('Jogo excluído com sucesso!', 'success')
+    return redirect(url_for('listar_jogos'))
 
 if __name__ == '__main__':
     app.run(debug=True)

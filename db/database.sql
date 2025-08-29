@@ -1,45 +1,48 @@
 CREATE TABLE IF NOT EXISTS Funcionario (
     id_funcionario INTEGER PRIMARY KEY AUTOINCREMENT,
     nome VARCHAR(100) NOT NULL,
-    cpf VARCHAR(11) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    senha VARCHAR(100) NOT NULL,
+    cpf VARCHAR(11) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    senha CHAR(60) NOT NULL, -- hash de senha
     telefone VARCHAR(14),
-    especialidade VARCHAR(400) NOT NULL
+    especialidade VARCHAR(400) NOT NULL,
+    CHECK (length(cpf) = 11)
 );
 
 CREATE TABLE IF NOT EXISTS Aluno (
     id_aluno INTEGER PRIMARY KEY AUTOINCREMENT,
     nome VARCHAR(100) NOT NULL,
-    matricula VARCHAR(13) NOT NULL,
+    matricula VARCHAR(13) NOT NULL UNIQUE,
     necessidade_especial VARCHAR(100) NOT NULL,
     observacao VARCHAR(200)
 );
 
 CREATE TABLE IF NOT EXISTS Categoria (
     id_categoria INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome VARCHAR(50) NOT NULL
+    nome VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS Jogo (
     id_jogo INTEGER PRIMARY KEY AUTOINCREMENT,
     nome VARCHAR(100) NOT NULL,
-    quant_disponivel INTEGER NOT NULL,
+    quant_disponivel INTEGER NOT NULL CHECK (quant_disponivel >= 0),
     descricao VARCHAR(400)
 );
 
-CREATE TABLE IF NOT EXISTS Jogos_Categoria (
-    id_jogos_categoria INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_categoria INTEGER NOT NULL,
+CREATE TABLE IF NOT EXISTS Jogo_Categoria (
     id_jogo INTEGER NOT NULL,
-    FOREIGN KEY (id_jogo) REFERENCES Jogo(id_jogo),
-    FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria)
+    id_categoria INTEGER NOT NULL,
+    PRIMARY KEY (id_jogo, id_categoria),
+    FOREIGN KEY (id_jogo) REFERENCES Jogo(id_jogo) ON DELETE CASCADE,
+    FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Atendimento (
     id_atendimento INTEGER PRIMARY KEY AUTOINCREMENT,
     progresso_aluno VARCHAR(400),
-    data_atendimento DATE NOT NULL
+    data_atendimento DATE NOT NULL,
+    id_funcionario INTEGER NOT NULL,
+    FOREIGN KEY (id_funcionario) REFERENCES Funcionario(id_funcionario)
 );
 
 CREATE TABLE IF NOT EXISTS Atendimento_Aluno (

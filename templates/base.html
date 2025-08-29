@@ -46,7 +46,7 @@
             </ul>
         </nav>
 
-        <!-- Offcanvas mantido do jeito que é -->
+        <!-- Offcanvas -->
         <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel" style="background-color:  #2948ff; color: white;">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Opções</h5>
@@ -55,34 +55,35 @@
             {% if 'usuario_id' in session %}
             <div class="offcanvas-body" style="color: white;">
                 <li class="base-option">
-                    <!-- <i class='bxr  bx-home'  style='color:#ffffff'></i> -->
-                    <i class='bxr  bx-form'  style='color:#ffffff'></i> 
+                    <i class='bxr  bx-form' style='color:#ffffff'></i> 
                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Atendimentos
                     </a>
                     <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="#">Todos os Atentimentos</a></li>
-                      <li><a class="dropdown-item" href="#">Adicionar um novo</a></li>
+                      <li><a class="dropdown-item" href="{{ url_for('dashboard') }}">Todos os Atendimentos</a></li>
+                      <li><a class="dropdown-item" href="{{ url_for('cadastro_atendimento') }}">Adicionar um novo</a></li>
                     </ul>             
                 </li>
+
                 <li class="base-option">
-                   <i class='bxr  bx-education'  style='color:#ffffff'></i> 
+                   <i class='bxr  bx-education' style='color:#ffffff'></i> 
                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Alunos
                     </a> 
                     <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="#">Todos os alunos</a></li>
-                      <li><a class="dropdown-item" href="#">Adicionar novo Aluno</a></li>
+                      <li><a class="dropdown-item" href="{{ url_for('cadastro_aluno') }}">Todos os alunos</a></li>
+                      <li><a class="dropdown-item" href="{{ url_for('cadastro_aluno') }}">Adicionar novo Aluno</a></li>
                     </ul> 
                 </li>
+
                 <li class="base-option">
-                    <i class='bxr  bx-chess-knight'  style='color:#ffffff'></i>
+                    <i class='bxr  bx-chess-knight' style='color:#ffffff'></i>
                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Jogos
                     </a>
                     <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="{{url-for('listar_jogos')}}">Todos os jogos</a></li>
-                      <li><a class="dropdown-item" href="#">Adicionar novo Jogo</a></li>
+                      <li><a class="dropdown-item" href="{{ url_for('listar_jogos') }}">Todos os jogos</a></li>
+                      <li><a class="dropdown-item" href="{{ url_for('cadastro_jogos') }}">Adicionar novo Jogo</a></li>
                     </ul> 
                 </li>
             </div>
@@ -91,22 +92,15 @@
 
         <!-- Conteúdo dinâmico da página -->
         <main class="base-main">
-            {% block content %}
-            {% endblock %}
+            {% block content %}{% endblock %}
         </main>
     </div>
     
     <footer class="base-footer">
         <ul class="base-footer-elmt">
-            <li>
-                <a href="">Sobre o NAPNE</a>
-            </li>
-            <li>
-                <a href="">Nossa equipe</a>
-            </li>
-            <li>
-                <a href="">Contantos</a>
-            </li>
+            <li><a href="#">Sobre o NAPNE</a></li>
+            <li><a href="#">Nossa equipe</a></li>
+            <li><a href="#">Contatos</a></li>
         </ul>
     </footer>
 
