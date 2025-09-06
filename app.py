@@ -3,6 +3,8 @@ from models.models import Funcionario, Categoria, Aluno, db, Jogo, Atendimento #
 from werkzeug.security import generate_password_hash, check_password_hash #Importar o hash
 from datetime import date
 from controllers.auth_controller import auth_bp
+from controllers.jogo_controller import jogo_bp
+
 
 app = Flask(__name__) #Definição dessa pagina como o app da aplicação
 app.secret_key = 'sua_chave_secreta_aqui'  #Secret key generica
@@ -21,6 +23,10 @@ def index():
 
 #Blueprint de autenticação de usuario.
 app.register_blueprint(auth_bp)
+
+#Blueprint da seção de jogos
+app.register_blueprint(jogo_bp)
+
 
 @app.route('/dashboard')
 def dashboard():
