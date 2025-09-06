@@ -31,15 +31,15 @@
 
                     <!-- Link sair -->
                     <li class="base-elmt">
-                        <a href="{{ url_for('logout') }}">Sair</a>
+                        <a href="{{ url_for('auth.logout') }}">Sair</a>
                     </li>
                 {% else %}
                     <!-- Usuário não logado - mostrar login e cadastro -->
                     <li class="base-elmt">
-                        <a href="{{ url_for('login') }}">Entrar</a>
+                        <a href="{{ url_for('auth.login') }}">Entrar</a>
                     </li>
                     <li class="base-elmt">
-                        <a href="{{ url_for('cadastro') }}">Cadastrar-se</a>
+                        <a href="{{ url_for('auth.cadastro') }}">Cadastrar-se</a>
                     </li>
                 {% endif %}
 
@@ -71,7 +71,7 @@
                         Alunos
                     </a> 
                     <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="{{ url_for('cadastro_aluno') }}">Todos os alunos</a></li>
+                      <li><a class="dropdown-item" href="{{ url_for('listar_alunos') }}">Todos os alunos</a></li>
                       <li><a class="dropdown-item" href="{{ url_for('cadastro_aluno') }}">Adicionar novo Aluno</a></li>
                     </ul> 
                 </li>

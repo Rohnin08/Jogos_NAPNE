@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, session, url_for, redirect, flash #Importação do flask e funções dele.
-from models import Funcionario, Categoria, Aluno, db, Jogo, Atendimento #Importação das tabelas de models
+from models.models import Funcionario, Categoria, Aluno, db, Jogo, Atendimento #Importação das tabelas de models
 from werkzeug.security import generate_password_hash, check_password_hash #Importar o hash
 from datetime import date
+from controllers.auth_controller import auth_bp
 
 app = Flask(__name__) #Definição dessa pagina como o app da aplicação
 app.secret_key = 'sua_chave_secreta_aqui'  #Secret key generica
@@ -18,79 +19,16 @@ with app.app_context():
 def index():
     return render_template("index.html")
 
-@app.route('/cadastro', methods=["GET", "POST"]) #Rota de cadastro
-def cadastro():
-    if request.method == "POST": #Requisição  com metodo post: ele enviara as informações para o banco de dados.
-        try:
-            nome = request.form['primeiro_nome'] + ' ' + request.form['segundo_nome'] #Concatena  as strings nome e sobrenome
-            email = request.form['email']
-            cpf = request.form['cpf']
-            especialidade = request.form['especialidade']
-            senha = request.form['senha']
-
-            if Funcionario.query.filter_by(email=email).first(): 
-                flash('Este e-mail já está cadastrado.', 'danger')
-                return redirect(url_for('cadastro'))
-
-            if Funcionario.query.filter_by(cpf=cpf).first():
-                flash('Este CPF já está cadastrado.', 'danger')
-                return redirect(url_for('cadastro'))
-
-            senha_hash = generate_password_hash(senha) #Gera o hash da senha do usuário, vai criptografar a senha, aumentando assim a segurança.
-
-            novo_funcionario = Funcionario( 
-                nome=nome,
-                email=email,
-                senha=senha_hash,
-                cpf=cpf,
-                especialidade=especialidade
-            )
-            
-            db.session.add(novo_funcionario)
-            db.session.commit()
-            flash('Cadastro realizado com sucesso!', 'success')
-            return redirect(url_for('login'))
-
-        except Exception as err:
-            flash(f'Erro ao cadastrar: {err}', 'danger')
-
-    return render_template('cadastro.html')
-
-@app.route('/login', methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        email = request.form.get('email')
-        senha = request.form.get('senha')
-
-        funcionario = Funcionario.query.filter_by(email=email).first()
-
-        if funcionario:
-            if check_password_hash(funcionario.senha, senha):
-                session['usuario_id'] = funcionario.id_funcionario
-                session['usuario_nome'] = funcionario.nome
-                flash('Login realizado com sucesso', 'success')
-                return redirect(url_for('dashboard'))
-            else:
-                flash('Senha incorreta.', 'danger')
-        else:
-            flash('Email não encontrado.', 'danger')
-
-        return redirect(url_for('login'))
-
-    return render_template("login.html")
+#Blueprint de autenticação de usuario.
+app.register_blueprint(auth_bp)
 
 @app.route('/dashboard')
 def dashboard():
     if 'usuario_id' not in session:
         flash('Você precisa estar logado para acessar esta página.', 'warning')
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
     return render_template("dashboard.html")
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    flash('Logout realizado com sucesso.', 'info')
-    return redirect(url_for('login'))
 
 @app.route('/cadastroCategoria', methods=["GET", "POST"])
 def cadastrar_categoria():
@@ -250,6 +188,11 @@ def cadastro_atendimento():
 def listar_jogos():
     jogos = Jogo.query.all()  # mantém como objetos
     return render_template("listar_jogos.html", jogos=jogos)
+
+@app.route("/alunos")
+def listar_alunos():
+    alunos = Aluno.query.all()  # mantém como objetos
+    return render_template("listar_alunos.html", alunos=alunos)
 
 
 @app.route('/jogos/editar/<int:id>', methods=['GET', 'POST'])

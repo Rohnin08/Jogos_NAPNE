@@ -20,7 +20,7 @@
                 <h1>Login</h1>
                 <p>Entrar no NAPNE Jogos</p>
             </div>
-            <form action="{{ url_for('login') }}" class="form-stl" method="POST">
+            <form action="{{ url_for('auth.login') }}" class="form-stl" method="POST">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label" >Endereço de Email</label>
                     <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" required>
