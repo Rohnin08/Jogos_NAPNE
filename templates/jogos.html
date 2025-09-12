@@ -36,7 +36,7 @@
                         <div class="mb-3 d-flex align-items-center">
                             <div class="flex-grow-1 me-2">
                                 <label for="categoriaJogo" class="form-label">Categoria</label>
-                                <select class="form-select" id="categoriaJogo" name="categoria[]" multiplhe required size="3">
+                                <select class="form-select" id="categoriaJogo" name="categoria" multiple required size="3">
                                     <option value="" disabled selected>Selecione a categoria</option>
                                     {% for cat in categorias %}
                                         <option value="{{ cat.id_categoria }}">{{ cat.nome }}</option>

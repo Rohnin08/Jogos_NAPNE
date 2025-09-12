@@ -1,32 +1,36 @@
-from flask import Flask, render_template, request, session, url_for, redirect, flash #Importação do flask e funções dele.
-from models.models import Funcionario, Categoria, Aluno, db, Jogo, Atendimento #Importação das tabelas de models
-from werkzeug.security import generate_password_hash, check_password_hash #Importar o hash
+from flask import Flask, render_template, request, session, url_for, redirect, flash
+from models.models import Funcionario, Categoria, Aluno, db, Jogo, Atendimento
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date
+
+# IMPORT CORRETO DOS BLUEPRINTS
 from controllers.auth_controller import auth_bp
 from controllers.jogo_controller import jogo_bp
+from controllers.aluno_controller import aluno_bp   # <--- IMPORT CORRETO
+from controllers.atendimento_controller import atendimento_bp
 
 
-app = Flask(__name__) #Definição dessa pagina como o app da aplicação
-app.secret_key = 'sua_chave_secreta_aqui'  #Secret key generica
+app = Flask(__name__)
+app.secret_key = 'sua_chave_secreta_aqui'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db' #Configurações do banco de dados da aplicação
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db.init_app(app) #Inicialização do banco de dados
+db.init_app(app)
 
-with app.app_context(): 
+# CRIE/THEME o banco caso precise (somente em dev)
+with app.app_context():
     db.create_all()
 
-@app.route('/') #Rota da pagina inicial "index.html"
+# REGISTRE OS BLUEPRINTS (prefixos opcionais)
+app.register_blueprint(auth_bp)                 # rotas de auth como /login, /cadastro
+app.register_blueprint(jogo_bp, url_prefix='') # pode ajustar para url_prefix='/jogos' se preferir
+app.register_blueprint(aluno_bp, url_prefix='/alunos')
+app.register_blueprint(atendimento_bp)
+
+@app.route('/')
 def index():
-    return render_template("index.html")
-
-#Blueprint de autenticação de usuario.
-app.register_blueprint(auth_bp)
-
-#Blueprint da seção de jogos
-app.register_blueprint(jogo_bp)
-
+    return render_template('index.html')
 
 @app.route('/dashboard')
 def dashboard():
@@ -35,97 +39,10 @@ def dashboard():
         return redirect(url_for('auth.login'))
     return render_template("dashboard.html")
 
-
-@app.route('/cadastroCategoria', methods=["GET", "POST"])
-def cadastrar_categoria():
-    if request.method == "POST":
-        nome = request.form.get('nome')
-        
-        if not nome:
-            flash("O nome da categoria é obrigatório.", 'danger')
-            return redirect(url_for('cadastrar_categoria'))
-
-        categoria_existente = Categoria.query.filter_by(nome=nome).first()
-        if categoria_existente:
-            flash("Essa categoria já existe.", 'danger')
-            return redirect(url_for('cadastrar_categoria'))
-
-        nova_categoria = Categoria(nome=nome)
-        db.session.add(nova_categoria)
-        db.session.commit()
-        flash("Categoria cadastrada com sucesso!", 'success')
-        return redirect(url_for('cadastrar_categoria'))
-    
-    return render_template("cadastroCategoria.html")
-
-@app.route('/cadastroAluno', methods=["GET", "POST"])
-def cadastro_aluno():
-    if request.method == "POST":
-        nome = request.form.get('nome')
-        matricula = request.form.get('matricula')
-        necessidade_especial = request.form.get("necessidade_especial")
-        observacao = request.form.get("observacao")
-
-        if not nome or not matricula or not necessidade_especial:
-            flash("Todos os campos obrigatórios devem ser preenchidos.", 'danger')
-            return redirect(url_for('cadastro_aluno'))
-
-        novo_aluno = Aluno(
-            nome=nome,
-            matricula=matricula,
-            necessidade_especial=necessidade_especial, 
-            observacao=observacao
-        )
-
-        db.session.add(novo_aluno)
-        db.session.commit()
-
-        flash("Aluno cadastrado com sucesso!", 'success')
-        return redirect(url_for('cadastro_aluno'))
-
-    return render_template("cadastroAluno.html")
-# certifique-se que Categoria está importado
-
-@app.route('/cadastroJogos', methods=["GET", "POST"])
-def cadastro_jogos():
-    categorias = Categoria.query.all()
-
-    if request.method == "POST":
-        nome = request.form.get('nome')
-        quant = request.form.get('quant')
-        descricao = request.form.get('Descricao')
-        id_categoria = request.form.get('categoria')  # pega ID da categoria selecionada
-
-        if not nome or not quant or not id_categoria:
-            flash("Todos os campos são obrigatórios!", "danger")
-            return redirect(url_for('cadastro_jogos'))
-
-        try:
-            novo_jogo = Jogo(
-                nome=nome,
-                quant_disponivel=int(quant),
-                descricao=descricao
-            )
-            db.session.add(novo_jogo)
-            db.session.commit()
-
-           # Pega a categoria selecionada pelo id
-            categoria = Categoria.query.get(int(id_categoria))
-
-            # Adiciona a categoria ao novo jogo via relacionamento N:N
-            novo_jogo.categorias.append(categoria)
-
-            # Salva no banco
-            db.session.add(novo_jogo)
-            db.session.commit()
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
-        except Exception as e:
-            db.session.rollback()
-
-        return redirect(url_for('cadastro_jogos'))
-
-    return render_template('cadastroJogos.html', categorias=categorias)
 
 #Cadastro de atendimentos
 @app.route('/cadastroAtendimento', methods=['GET', 'POST'])
@@ -174,32 +91,42 @@ def cadastro_atendimento():
 
     return render_template('cadastroAtendimento.html', alunos=alunos, jogos=jogos)
 
-
-# @app.route("/jogos")
-# def listar_jogos():
-#     jogos = Jogo.query.all()
-#     jogos_formatados = []
-#     for j in jogos:
-#         categorias = ", ".join([c.nome for c in j.categorias]) if j.categorias else "Sem categoria"
-#         jogos_formatados.append({
-#             "id": j.id_jogo,
-#             "nome": j.nome,
-#             "quant": j.quant_disponivel,
-#             "descricao": j.descricao or "Sem descrição",
-#             "categorias": categorias
-#         })
-#     return render_template("listar_jogos.html", jogos=jogos_formatados)
-
 @app.route("/jogos")
 def listar_jogos():
     jogos = Jogo.query.all()  # mantém como objetos
     return render_template("listar_jogos.html", jogos=jogos)
 
-@app.route("/alunos")
+@app.route('/alunos')
 def listar_alunos():
-    alunos = Aluno.query.all()  # mantém como objetos
-    return render_template("listar_alunos.html", alunos=alunos)
+    # Busca todos os alunos no banco de dados
+    alunos = Aluno.query.all()
+    # Renderiza o template, passando a lista de alunos
+    return render_template('listar_alunos.html', alunos=alunos)
 
+
+# Adicione esta rota no seu arquivo app.py
+@app.route('/alunos/editar/<int:id>', methods=['GET', 'POST'])
+def editar_aluno(id):
+    aluno = Aluno.query.get_or_404(id)
+    if request.method == 'POST':
+        aluno.nome = request.form.get('nome')
+        aluno.matricula = request.form.get('matricula')
+        aluno.necessidade_especial = request.form.get('necessidade_especial')
+        aluno.observacao = request.form.get('observacao')
+        db.session.commit()
+        flash('Aluno atualizado com sucesso!', 'success')
+        return redirect(url_for('listar_alunos'))
+    
+    return render_template('editar_aluno.html', aluno=aluno)
+
+# Adicione a rota de exclusão também
+@app.route('/alunos/excluir/<int:id>', methods=['POST', 'GET'])
+def excluir_aluno(id):
+    aluno = Aluno.query.get_or_404(id)
+    db.session.delete(aluno)
+    db.session.commit()
+    flash('Aluno excluído com sucesso!', 'success')
+    return redirect(url_for('listar_alunos'))
 
 @app.route('/jogos/editar/<int:id>', methods=['GET', 'POST'])
 def editar_jogo(id):
