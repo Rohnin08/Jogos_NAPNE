@@ -20,7 +20,7 @@ def cadastrar_jogo():
 
     if not nome or not quant or not categoria_ids:
         flash("Todos os campos são obrigatórios!", "danger")
-        return redirect(url_for('jogo.jogo'))
+        return redirect(url_for('jogo.jogo')) # CORRIGIDO
 
     try:
         novo_jogo = Jogo(nome=nome, quant_disponivel=int(quant), descricao=descricao)
@@ -38,7 +38,7 @@ def cadastrar_jogo():
         db.session.rollback()
         flash(f"Erro ao cadastrar o jogo: {e}", "danger")
 
-    return redirect(url_for('jogo.jogo'))
+    return redirect(url_for('jogo.jogo')) # CORRIGIDO
 
 # EDIÇÃO DE JOGO
 @jogo_bp.route('/editar/<int:id>', methods=['GET', 'POST'])
@@ -60,18 +60,18 @@ def editar_jogo(id):
 
         db.session.commit()
         flash("Jogo atualizado com sucesso!", "success")
-        return redirect(url_for('jogo.jogo'))
+        return redirect(url_for('jogo.jogo')) # CORRIGIDO
 
     return render_template('editar_jogo.html', jogo=jogo_obj, categorias=categorias)
 
 # EXCLUSÃO DE JOGO
 @jogo_bp.route('/excluir/<int:id>', methods=['POST'])
-def excluir_jogo(id):
+def excluir(id):
     jogo_obj = Jogo.query.get_or_404(id)
     db.session.delete(jogo_obj)
     db.session.commit()
     flash("Jogo excluído com sucesso!", "success")
-    return redirect(url_for('jogo.jogo'))
+    return redirect(url_for('jogo.jogo')) # CORRIGIDO
 
 # CADASTRO DE CATEGORIA
 @jogo_bp.route('/categorias/cadastrar', methods=['POST'])
@@ -79,15 +79,15 @@ def cadastrar_categoria():
     nome = request.form.get('nome')
     if not nome:
         flash("O nome da categoria é obrigatório!", "danger")
-        return redirect(url_for('jogo.jogo'))
+        return redirect(url_for('jogo.jogo')) # CORRIGIDO
 
     categoria_existente = Categoria.query.filter_by(nome=nome).first()
     if categoria_existente:
         flash("Essa categoria já existe.", "danger")
-        return redirect(url_for('jogo.jogo'))
+        return redirect(url_for('jogo.jogo')) # CORRIGIDO
 
     nova_categoria = Categoria(nome=nome)
     db.session.add(nova_categoria)
     db.session.commit()
     flash("Categoria cadastrada com sucesso!", "success")
-    return redirect(url_for('jogo.jogo'))
+    return redirect(url_for('jogo.jogo')) # CORRIGIDO

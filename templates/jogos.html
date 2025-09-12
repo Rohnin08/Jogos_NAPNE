@@ -6,12 +6,10 @@
 <div class="container mt-4">
     <h1 class="mb-4">Todos os Jogos</h1>
 
-    <!-- Botão para abrir modal de cadastro de jogo -->
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#cadastroJogoModal">
+    <button type="button" class="btn btn-primary mb-3" data-coreui-toggle="modal" data-coreui-target="#cadastroJogoModal">
         Cadastrar Jogo
     </button>
 
-    <!-- Modal de Cadastro de Jogo -->
     <div class="modal fade" id="cadastroJogoModal" tabindex="-1" aria-labelledby="cadastroJogoLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -33,21 +31,16 @@
                             <label for="descricaoJogo" class="form-label">Descrição</label>
                             <textarea class="form-control" id="descricaoJogo" name="descricao"></textarea>
                         </div>
-                        <div class="mb-3 d-flex align-items-center">
-                            <div class="flex-grow-1 me-2">
-                                <label for="categoriaJogo" class="form-label">Categoria</label>
-                                <select class="form-select" id="categoriaJogo" name="categoria" multiple required size="3">
-                                    <option value="" disabled selected>Selecione a categoria</option>
-                                    {% for cat in categorias %}
-                                        <option value="{{ cat.id_categoria }}">{{ cat.nome }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <!-- Botão de adicionar categoria -->
-                            <button type="button" class="btn btn-secondary mt-4" data-bs-toggle="modal" data-bs-target="#cadastroCategoriaModal">
-                                +
-                            </button>
+                        
+                        <div class="mb-3">
+                            <label for="categoriaJogo" class="form-label">Categorias</label>
+                            <select name="categoria" id="categoriaJogo" class="form-multi-select" multiple data-coreui-search="global" required>
+                                {% for cat in categorias %}
+                                    <option value="{{ cat.id_categoria }}">{{ cat.nome }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
+
                         <button type="submit" class="btn btn-success mt-3 w-100">Cadastrar</button>
                     </form>
                 </div>
@@ -55,28 +48,6 @@
         </div>
     </div>
 
-    <!-- Modal de Cadastro de Categoria -->
-    <div class="modal fade" id="cadastroCategoriaModal" tabindex="-1" aria-labelledby="cadastroCategoriaLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="cadastroCategoriaLabel">Nova Categoria</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" action="{{ url_for('jogo.cadastrar_categoria') }}">
-                        <div class="mb-3">
-                            <label for="nomeCategoria" class="form-label">Nome da Categoria</label>
-                            <input type="text" class="form-control" id="nomeCategoria" name="nome" required>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Cadastrar Categoria</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tabela de Jogos -->
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
@@ -103,14 +74,102 @@
                     {% endif %}
                 </td>
                 <td>
-                    <form method="POST" action="{{ url_for('jogo.excluir_jogo', id=jogo.id_jogo) }}" style="display:inline">
+                    <button 
+                        type="button" 
+                        class="btn btn-primary btn-sm btn-editar-jogo" 
+                        data-coreui-toggle="modal" 
+                        data-coreui-target="#editarJogoModal"
+                        data-id="{{ jogo.id_jogo }}" 
+                        data-nome="{{ jogo.nome }}" 
+                        data-quant="{{ jogo.quant_disponivel }}"
+                        data-descricao="{{ jogo.descricao }}"
+                        data-categorias="{{ ','.join([str(c.id_categoria) for c in jogo.categorias]) }}"
+                    >
+                        Editar
+                    </button>
+                    <form method="POST" action="{{ url_for('jogo.excluir', id=jogo.id_jogo) }}" style="display:inline">
                         <button class="btn btn-danger btn-sm">Excluir</button>
                     </form>
-                    <!-- Botões de edição ou detalhes podem ser adicionados aqui -->
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+
+<div class="modal fade" id="editarJogoModal" tabindex="-1" aria-labelledby="editarJogoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarJogoLabel">Editar Jogo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarJogo" method="POST" action="">
+                    <input type="hidden" name="id" id="editar_id">
+                    <div class="mb-3">
+                        <label for="editarNome" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="editarNome" name="nome" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editarQuant" class="form-label">Quantidade</label>
+                        <input type="number" class="form-control" id="editarQuant" name="quant" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editarDescricao" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="editarDescricao" name="descricao"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editarCategorias" class="form-label">Categorias</label>
+                        <select name="categoria" id="editarCategorias" class="form-multi-select" multiple data-coreui-search="global" required>
+                            {% for cat in categorias %}
+                                <option value="{{ cat.id_categoria }}">{{ cat.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3 w-100">Salvar Alterações</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editarModalEl = document.getElementById('editarJogoModal');
+        const bsEditarModal = new coreui.Modal(editarModalEl);
+        const formEditarJogo = document.getElementById('formEditarJogo');
+
+        document.querySelectorAll('.btn-editar-jogo').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const id = this.dataset.id;
+                const nome = this.dataset.nome || '';
+                const quant = this.dataset.quant || '';
+                const descricao = this.dataset.descricao || '';
+                const categoriasStr = this.dataset.categorias || '';
+                const categorias = categoriasStr.split(',').map(Number);
+                
+                document.getElementById('editar_id').value = id;
+                document.getElementById('editarNome').value = nome;
+                document.getElementById('editarQuant').value = quant;
+                document.getElementById('editarDescricao').value = descricao;
+                
+                const selectCategorias = document.getElementById('editarCategorias');
+                for (let i = 0; i < selectCategorias.options.length; i++) {
+                    const option = selectCategorias.options[i];
+                    if (categorias.includes(Number(option.value))) {
+                        option.selected = true;
+                    } else {
+                        option.selected = false;
+                    }
+                }
+                
+                formEditarJogo.action = '{{ url_for("jogo.editar_jogo", id=0) }}'.replace('0', id);
+
+                bsEditarModal.show();
+            });
+        });
+    });
+</script>
 {% endblock %}
