@@ -83,7 +83,7 @@
                         data-nome="{{ jogo.nome }}" 
                         data-quant="{{ jogo.quant_disponivel }}"
                         data-descricao="{{ jogo.descricao }}"
-                        data-categorias="{{ ','.join([str(c.id_categoria) for c in jogo.categorias]) }}"
+                        data-categorias="{{ jogo.categorias | map(attribute='id_categoria') | join(',') }}"
                     >
                         Editar
                     </button>

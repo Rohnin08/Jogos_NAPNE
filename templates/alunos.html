@@ -4,12 +4,50 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">Todos os alunos</h1>
+    <h1 class="mb-4">Todos os Alunos</h1>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#cadastroAlunoModal">
-        Cadastrar aluno
+    <!-- Botão para abrir modal de cadastro -->
+    <button type="button" class="btn btn-primary mb-3" data-coreui-toggle="modal" data-coreui-target="#cadastroModal">
+        Cadastrar Aluno
     </button>
 
+    <!-- Modal de cadastro -->
+    <div class="modal fade" id="cadastroModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{{ url_for('aluno.cadastrar') }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cadastrar Novo Aluno</h5>
+                        <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nomeAluno" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="nomeAluno" name="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="matriculaAluno" class="form-label">Matrícula</label>
+                            <input type="text" class="form-control" id="matriculaAluno" name="matricula" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="necessidadeAluno" class="form-label">Necessidade Especial</label>
+                            <input type="text" class="form-control" id="necessidadeAluno" name="necessidade_especial" placeholder="Descreva a necessidade, se houver">
+                        </div>
+                        <div class="mb-3">
+                            <label for="observacaoAluno" class="form-label">Observação</label>
+                            <textarea class="form-control" id="observacaoAluno" name="observacao" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-coreui-dismiss="modal">Fechar</button>
+                        <button type="submit" class="btn btn-success w-100">Cadastrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela de alunos -->
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
@@ -25,22 +63,25 @@
             <tr>
                 <td>{{ aluno.nome }}</td>
                 <td>{{ aluno.matricula }}</td>
-                <td>{{ "Sim" if aluno.necessidade_especial else "Não" }}</td>
+                <td>{{ aluno.necessidade_especial or "Não" }}</td>
                 <td>{{ aluno.observacao or "N/A" }}</td>
-                <td class="d-flex gap-2">
-                    <a href="#"
-                       class="btn btn-sm btn-warning btn-editar"
-                       data-id="{{ aluno.id_aluno }}"
-                       data-nome="{{ aluno.nome|e }}"
-                       data-matricula="{{ aluno.matricula|e }}"
-                       data-necessidade="{{ 1 if aluno.necessidade_especial else 0 }}"
-                       data-observacao="{{ aluno.observacao|e }}">
-                       Editar
-                    </a>
-
-                    <form method="POST" action="{{ url_for('aluno.excluir', id=aluno.id_aluno) }}" onsubmit="return confirm('Tem certeza que deseja excluir este aluno?');" style="display:inline;">
-                        <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
-                    </form>
+                <td>
+                    <div class="btn-group" role="group">
+                        <!-- Botão editar -->
+                        <button type="button" class="btn btn-primary btn-sm btn-editar-aluno"
+                                data-id="{{ aluno.id_aluno }}"
+                                data-nome="{{ aluno.nome|e }}"
+                                data-matricula="{{ aluno.matricula|e }}"
+                                data-necessidade="{{ aluno.necessidade_especial|e }}"
+                                data-observacao="{{ aluno.observacao|e }}"
+                                data-coreui-toggle="modal" data-coreui-target="#editarModal">
+                            Editar
+                        </button>
+                        <!-- Botão excluir -->
+                        <form method="POST" action="{{ url_for('aluno.excluir', id=aluno.id_aluno) }}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este aluno?');">
+                            <button class="btn btn-danger btn-sm">Excluir</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             {% else %}
@@ -52,110 +93,68 @@
     </table>
 </div>
 
-<!-- Modal de cadastro -->
-<div class="modal fade" id="cadastroAlunoModal" tabindex="-1" aria-labelledby="cadastroAlunoModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="{{ url_for('aluno.cadastrar') }}" method="POST">
-        <div class="modal-header">
-          <h5 class="modal-title" id="cadastroAlunoModalLabel">Cadastrar Novo Aluno</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body">
-            <div class="mb-3">
-                <label for="nome" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="nome" name="nome" required>
-            </div>
-            <div class="mb-3">
-                <label for="matricula" class="form-label">Matrícula</label>
-                <input type="text" class="form-control" id="matricula" name="matricula" required>
-            </div>
-            <div class="mb-3">
-                <label for="necessidade_especial" class="form-label">Necessidade Especial</label>
-                <input type="text" class="form-control" id="necessidade_especial" name="necessidade_especial" placeholder="Descreva a necessidade específica">
-            </div>
-            <div class="mb-3">
-                <label for="observacao" class="form-label">Observação</label>
-                <textarea class="form-control" id="observacao" name="observacao" rows="3"></textarea>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            <button type="submit" class="btn btn-primary">Cadastrar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 <!-- Modal de edição -->
-<div class="modal fade" id="editarAlunoModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <!-- action será preenchida dinamicamente via JS -->
-      <form id="formEditarAluno" method="POST" action="/alunos/editar/">
-        <div class="modal-header">
-          <h5 class="modal-title">Editar Aluno</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+<div class="modal fade" id="editarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formEditarAluno" method="POST" action="">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Aluno</h5>
+                    <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="editar_id">
+                    <div class="mb-3">
+                        <label class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="editar_nome" name="nome" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Matrícula</label>
+                        <input type="text" class="form-control" id="editar_matricula" name="matricula" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Necessidade Especial</label>
+                        <input type="text" class="form-control" id="editar_necessidade" name="necessidade_especial">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Observação</label>
+                        <textarea class="form-control" id="editar_observacao" name="observacao" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-coreui-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary w-100">Salvar Alterações</button>
+                </div>
+            </form>
         </div>
-        <div class="modal-body">
-          <input type="hidden" id="editar_id" name="id">
-          <div class="mb-3">
-            <label class="form-label">Nome</label>
-            <input type="text" id="editar_nome" name="nome" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Matrícula</label>
-            <input type="text" id="editar_matricula" name="matricula" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label for="editar_necessidade" class="form-label">Necessidade Especial</label>
-            <input type="text" class="form-control" id="editar_necessidade" name="necessidade_especial">
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Observação</label>
-            <textarea id="editar_observacao" name="observacao" class="form-control" rows="3"></textarea>
-        </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-          <button type="submit" class="btn btn-primary">Salvar</button>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  const editarModalEl = document.getElementById('editarAlunoModal');
-  const bsEditarModal = new bootstrap.Modal(editarModalEl);
+    const editarModalEl = document.getElementById('editarModal');
+    const bsEditarModal = new coreui.Modal(editarModalEl);
+    const formEditar = document.getElementById('formEditarAluno');
 
-  const formEditar = document.getElementById('formEditarAluno');
+    document.querySelectorAll('.btn-editar-aluno').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = this.dataset.id;
+            const nome = this.dataset.nome || '';
+            const matricula = this.dataset.matricula || '';
+            const necessidade = this.dataset.necessidade || '';
+            const observacao = this.dataset.observacao || '';
 
-  document.querySelectorAll('.btn-editar').forEach(btn => {
-    btn.addEventListener('click', function (e) {
-      e.preventDefault();
-      const id = this.dataset.id;
-      const nome = this.dataset.nome || '';
-      const matricula = this.dataset.matricula || '';
-      const necessidade = this.dataset.necessidade === '1';
-      const observacao = this.dataset.observacao || '';
+            document.getElementById('editar_id').value = id;
+            document.getElementById('editar_nome').value = nome;
+            document.getElementById('editar_matricula').value = matricula;
+            document.getElementById('editar_necessidade').value = necessidade;
+            document.getElementById('editar_observacao').value = observacao;
 
-      document.getElementById('editar_id').value = id;
-      document.getElementById('editar_nome').value = nome;
-      document.getElementById('editar_matricula').value = matricula;
-      document.getElementById('editar_necessidade').checked = necessidade;
-      document.getElementById('editar_observacao').value = observacao;
+            formEditar.action = '{{ url_for("aluno.editar", id=0) }}'.replace('0', id);
 
-      // Preenche action com o id real
-      formEditar.action = '/alunos/editar/' + id;
-
-      bsEditarModal.show();
+            bsEditarModal.show();
+        });
     });
-  });
 });
 </script>
-
 {% endblock %}
