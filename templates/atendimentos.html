@@ -1,49 +1,48 @@
 {% extends "base.html" %}
 
-{% block title %}Jogos{% endblock %}
+{% block title %}Atendimentos{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">Todos os Jogos</h1>
+    <h1 class="mb-4">Todos os Atendimentos</h1>
 
     <!-- Botão para abrir modal de cadastro -->
     <button type="button" class="btn btn-primary mb-3" data-coreui-toggle="modal" data-coreui-target="#cadastroModal">
-        Cadastrar Jogo
+        Cadastrar Atendimento
     </button>
 
     <!-- Modal de cadastro -->
     <div class="modal fade" id="cadastroModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form method="POST" action="{{ url_for('jogo.cadastrar_jogo') }}">
+                <form method="POST" action="{{ url_for('atendimento.cadastrar_atendimento') }}">
                     <div class="modal-header">
-                        <h5 class="modal-title">Cadastrar Novo Jogo</h5>
+                        <h5 class="modal-title">Cadastrar Novo Atendimento</h5>
                         <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Fechar"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="nomeJogo" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="nomeJogo" name="nome" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="quantJogo" class="form-label">Quantidade</label>
-                            <input type="number" class="form-control" id="quantJogo" name="quant" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="descricaoJogo" class="form-label">Descrição</label>
-                            <textarea class="form-control" id="descricaoJogo" name="descricao" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="categoriaJogo" class="form-label">Categorias</label>
-                            <select name="categoria" id="categoriaJogo" class="form-multi-select" multiple data-coreui-search="global" required>
-                                {% for cat in categorias %}
-                                    <option value="{{ cat.id_categoria }}">{{ cat.nome }}</option>
+                            <label for="alunos" class="form-label">Alunos</label>
+                            <select name="alunos" id="alunos" class="form-multi-select" multiple data-coreui-search="global" required>
+                                {% for aluno in alunos %}
+                                    <option value="{{ aluno.id_aluno }}">{{ aluno.nome }}</option>
                                 {% endfor %}
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="jogos" class="form-label">Jogos</label>
+                            <select name="jogos" id="jogos" class="form-multi-select" multiple data-coreui-search="global" required>
+                                {% for jogo in jogos %}
+                                    <option value="{{ jogo.id_jogo }}">{{ jogo.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="progresso" class="form-label">Progresso</label>
+                            <textarea name="progresso" id="progresso" class="form-control" rows="3"></textarea>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-coreui-dismiss="modal">Fechar</button>
                         <button type="submit" class="btn btn-success w-100">Cadastrar</button>
                     </div>
                 </form>
@@ -51,94 +50,89 @@
         </div>
     </div>
 
-    <!-- Tabela de jogos -->
+    <!-- Tabela de atendimentos -->
     <table class="table table-bordered table-striped">
-        <thead class="table-dark">
-            <tr>
-                <th>Nome</th>
-                <th>Quantidade</th>
-                <th>Descrição</th>
-                <th>Categorias</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for jogo in jogos %}
-            <tr>
-                <td>{{ jogo.nome }}</td>
-                <td>{{ jogo.quant_disponivel }}</td>
-                <td>{{ jogo.descricao or "Sem descrição" }}</td>
-                <td>
-                    {% if jogo.categorias %}
-                        {% for c in jogo.categorias %}
-                            {{ c.nome }}{% if not loop.last %}, {% endif %}
-                        {% endfor %}
-                    {% else %}
-                        Sem categoria
-                    {% endif %}
-                </td>
-                <td>
-                    <div class="btn-group" role="group">
-                        <!-- Botão editar -->
-                        <button type="button" class="btn btn-primary btn-sm btn-editar-jogo"
-                                data-id="{{ jogo.id_jogo }}"
-                                data-nome="{{ jogo.nome }}"
-                                data-quant="{{ jogo.quant_disponivel }}"
-                                data-descricao="{{ jogo.descricao }}"
-                                data-categorias="{{ jogo.categorias | map(attribute='id_categoria') | join(',') }}"
-                                data-coreui-toggle="modal" data-coreui-target="#editarModal">
-                            Editar
-                        </button>
-                        <!-- Botão excluir -->
-                        <form method="POST" action="{{ url_for('jogo.excluir', id=jogo.id_jogo) }}" style="display:inline;">
-                            <button class="btn btn-danger btn-sm">Excluir</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="5" class="text-center">Nenhum jogo cadastrado.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    <thead class="table-dark">
+        <tr>
+            <th>Data do atendimento</th>
+            <th>Aluno</th>
+            <th>Jogo(s)</th>
+            <th>Progresso do aluno</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for atendimento in atendimentos %}
+        <tr>
+            <td>{{ atendimento.data_atendimento.strftime('%d/%m/%Y') }}</td>
+            <td>
+                {% for aluno in atendimento.alunos %}
+                    {{ aluno.nome }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for jogo in atendimento.jogos %}
+                    {{ jogo.nome }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+            <td>{{ atendimento.progresso_aluno or "N/A" }}</td>
+            <td>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary btn-sm btn-editar-atendimento"
+                            data-id="{{ atendimento.id_atendimento }}"
+                            data-progresso="{{ atendimento.progresso_aluno }}"
+                            data-alunos="{{ atendimento.alunos | map(attribute='id_aluno') | join(',') }}"
+                            data-jogos="{{ atendimento.jogos | map(attribute='id_jogo') | join(',') }}"
+                            data-coreui-toggle="modal" data-coreui-target="#editarModal">
+                        Editar
+                    </button>
+                    <form method="POST" action="{{ url_for('atendimento.excluir_atendimento', id=atendimento.id_atendimento) }}" style="display:inline;">
+                        <button class="btn btn-danger btn-sm">Excluir</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5" class="text-center">Nenhum atendimento cadastrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 <!-- Modal de edição -->
 <div class="modal fade" id="editarModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="formEditarJogo" method="POST" action="">
+            <form id="formEditarAtendimento" method="POST" action="">
                 <div class="modal-header">
-                    <h5 class="modal-title">Editar Jogo</h5>
+                    <h5 class="modal-title">Editar Atendimento</h5>
                     <button type="button" class="btn-close" data-coreui-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" name="id" id="editar_id">
                     <div class="mb-3">
-                        <label for="editarNome" class="form-label">Nome</label>
-                        <input type="text" class="form-control" id="editarNome" name="nome" required>
+                        <label for="editarProgresso" class="form-label">Progresso</label>
+                        <textarea class="form-control" id="editarProgresso" name="progresso" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="editarQuant" class="form-label">Quantidade</label>
-                        <input type="number" class="form-control" id="editarQuant" name="quant" required>
+                        <label for="editarAlunos" class="form-label">Alunos</label>
+                        <select name="alunos" id="editarAlunos" class="form-multi-select" multiple data-coreui-search="global">
+                            {% for aluno in alunos %}
+                                <option value="{{ aluno.id_aluno }}">{{ aluno.nome }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="mb-3">
-                        <label for="editarDescricao" class="form-label">Descrição</label>
-                        <textarea class="form-control" id="editarDescricao" name="descricao" rows="3"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editarCategorias" class="form-label">Categorias</label>
-                        <select name="categoria" id="editarCategorias" class="form-multi-select" multiple data-coreui-search="global" required>
-                            {% for cat in categorias %}
-                                <option value="{{ cat.id_categoria }}">{{ cat.nome }}</option>
+                        <label for="editarJogos" class="form-label">Jogos</label>
+                        <select name="jogos" id="editarJogos" class="form-multi-select" multiple data-coreui-search="global">
+                            {% for jogo in jogos %}
+                                <option value="{{ jogo.id_jogo }}">{{ jogo.nome }}</option>
                             {% endfor %}
                         </select>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-coreui-dismiss="modal">Fechar</button>
                     <button type="submit" class="btn btn-primary w-100">Salvar Alterações</button>
                 </div>
             </form>
@@ -150,27 +144,32 @@
 document.addEventListener('DOMContentLoaded', function () {
     const editarModalEl = document.getElementById('editarModal');
     const bsEditarModal = new coreui.Modal(editarModalEl);
-    const formEditar = document.getElementById('formEditarJogo');
+    const formEditar = document.getElementById('formEditarAtendimento');
 
-    document.querySelectorAll('.btn-editar-jogo').forEach(btn => {
+    document.querySelectorAll('.btn-editar-atendimento').forEach(btn => {
         btn.addEventListener('click', function () {
             const id = this.dataset.id;
-            const nome = this.dataset.nome || '';
-            const quant = this.dataset.quant || '';
-            const descricao = this.dataset.descricao || '';
-            const categorias = this.dataset.categorias.split(',').map(Number);
+            const progresso = this.dataset.progresso || '';
+            const alunosStr = this.dataset.alunos || '';
+            const jogosStr = this.dataset.jogos || '';
 
             document.getElementById('editar_id').value = id;
-            document.getElementById('editarNome').value = nome;
-            document.getElementById('editarQuant').value = quant;
-            document.getElementById('editarDescricao').value = descricao;
+            document.getElementById('editarProgresso').value = progresso;
 
-            const selectCategorias = document.getElementById('editarCategorias');
-            Array.from(selectCategorias.options).forEach(opt => {
-                opt.selected = categorias.includes(Number(opt.value));
+            const alunosSelecionados = alunosStr.split(',').map(Number);
+            const jogosSelecionados = jogosStr.split(',').map(Number);
+
+            const selectAlunos = document.getElementById('editarAlunos');
+            Array.from(selectAlunos.options).forEach(opt => {
+                opt.selected = alunosSelecionados.includes(Number(opt.value));
             });
 
-            formEditar.action = '{{ url_for("jogo.editar_jogo", id=0) }}'.replace('0', id);
+            const selectJogos = document.getElementById('editarJogos');
+            Array.from(selectJogos.options).forEach(opt => {
+                opt.selected = jogosSelecionados.includes(Number(opt.value));
+            });
+
+            formEditar.action = '{{ url_for("atendimento.editar_atendimento", id=0) }}'.replace('0', id);
 
             bsEditarModal.show();
         });
